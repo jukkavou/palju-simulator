@@ -8,14 +8,12 @@ const btn = (bg: string) => ({ padding: "8px 12px", background: bg, color: "#fff
 interface StartScreenProps {
   characters: Character[];
   setCharacters: React.Dispatch<React.SetStateAction<Character[]>>;
-  apiKey: string;
-  setApiKey: React.Dispatch<React.SetStateAction<string>>;
   onStart: () => void;
   hasHallOfFame: boolean;
   onShowHallOfFame: () => void;
 }
 
-export default function StartScreen({ characters, setCharacters, apiKey, setApiKey, onStart, hasHallOfFame, onShowHallOfFame }: StartScreenProps) {
+export default function StartScreen({ characters, setCharacters, onStart, hasHallOfFame, onShowHallOfFame }: StartScreenProps) {
   const [editing, setEditing] = useState(false);
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", background: "#1a1a1a", minHeight: "100vh", color: "#eee", fontFamily: PF, fontSize: 12 }}>
@@ -42,12 +40,7 @@ export default function StartScreen({ characters, setCharacters, apiKey, setApiK
             </div>
           ))}
         </div>
-        <div style={{ textAlign: "left", background: "#222", padding: 10, borderRadius: 6, marginBottom: 12 }}>
-          <div style={{ fontSize: 10, color: "#FFD54F", marginBottom: 4 }}>🤖 Claude API -avain (valinnainen):</div>
-          <input value={apiKey} onChange={e => setApiKey(e.target.value)} type="password" placeholder="sk-ant-..."
-            style={{ width: "100%", background: "#333", color: "#fff", border: "1px solid #666", borderRadius: 3, padding: "4px 6px", fontFamily: PF, fontSize: 10 }} />
-          <div style={{ fontSize: 9, color: "#666", marginTop: 4 }}>Mahdollistaa AI-dialogin hahmojen valille</div>
-        </div>
+
         <div style={{ display: "flex", gap: 8 }}>
           <button onClick={onStart} style={{ ...btn("#4CAF50"), fontSize: 13, flex: 2 }}>🛒 Kauppaan!</button>
           {hasHallOfFame && <button onClick={onShowHallOfFame} style={{ ...btn("#FF9800"), flex: 1 }}>🏆</button>}

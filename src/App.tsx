@@ -25,7 +25,7 @@ export default function App() {
   const [gear, setGear] = useState<GearItem[]>([]);
   const [score, setScore] = useState<Score | null>(null);
   const [hallOfFame, setHallOfFame] = useState<HallOfFameEntry[]>([]);
-  const [apiKey, setApiKey] = useState("");
+  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY as string ?? "";
 
   const game = useGameState(charTemplates);
   const dialog = useDialogue();
@@ -96,7 +96,7 @@ export default function App() {
   const toggleGear = (item: GearItem) => setGear(prev => prev.find(g => g.name === item.name) ? prev.filter(g => g.name !== item.name) : [...prev, item]);
 
   if (phase === "halloffame") return <HallOfFame entries={hallOfFame} onRestart={restart} />;
-  if (phase === "start") return <StartScreen characters={charTemplates} setCharacters={setCharTemplates} apiKey={apiKey} setApiKey={setApiKey} onStart={() => setPhase("shopping")} hasHallOfFame={hallOfFame.length > 0} onShowHallOfFame={() => setPhase("halloffame")} />;
+  if (phase === "start") return <StartScreen characters={charTemplates} setCharacters={setCharTemplates} onStart={() => setPhase("shopping")} hasHallOfFame={hallOfFame.length > 0} onShowHallOfFame={() => setPhase("halloffame")} />;
   if (phase === "shopping") return <ShoppingScreen budget={budget} spent={spent} cart={cart} onAdd={addToCart} onRemove={removeFromCart} onNext={() => setPhase("gear")} />;
   if (phase === "gear") return <GearScreen gear={gear} onToggle={toggleGear} onBack={() => setPhase("shopping")} onStart={() => { setPhase("playing"); game.log("Porukka saapui mokille!", "#FFD54F"); }} />;
   if (phase === "summary" && score) return <SummaryScreen score={score} characters={game.characters} onSave={saveToHallOfFame} onRestart={restart} />;
