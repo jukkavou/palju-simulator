@@ -1,4 +1,6 @@
-export const SHOPPING_ITEMS = [
+import type { ShoppingItem } from '../types';
+
+export const SHOPPING_ITEMS: ShoppingItem[] = [
   { name: "Makkarat & lihat", cost: 25, food: 20, emoji: "🥩" },
   { name: "Salaatit & kasvikset", cost: 15, food: 10, emoji: "🥗" },
   { name: "Aamiaistarvikkeet", cost: 12, food: 15, emoji: "🥞" },

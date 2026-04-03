@@ -1,6 +1,15 @@
 const PF = "'Courier New', monospace";
 
-export default function StatusBar({ label, value, max, color, icon, small }) {
+interface StatusBarProps {
+  label: string;
+  value: number;
+  max: number;
+  color: string;
+  icon: string;
+  small?: boolean;
+}
+
+export default function StatusBar({ label, value, max, color, icon, small }: StatusBarProps) {
   const pct = Math.min(100, Math.max(0, (value / max) * 100));
   return (
     <div style={{ marginBottom: small ? 3 : 5 }}>

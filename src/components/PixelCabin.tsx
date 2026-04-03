@@ -1,7 +1,12 @@
 import { SCENES } from '../data/timeSlots';
 
-export default function PixelCabin({ scene, hotTubTemp }) {
-  const s = SCENES[scene] || SCENES.fri_eve;
+interface PixelCabinProps {
+  scene: string;
+  hotTubTemp: number;
+}
+
+export default function PixelCabin({ scene, hotTubTemp }: PixelCabinProps) {
+  const s = SCENES[scene] || SCENES["fri_eve"]!;
   const isNight = scene?.includes("night") || scene?.includes("eve");
   const stars = isNight ? Array.from({ length: 15 }, (_, i) => ({ x: (i * 47 + 13) % 100, y: (i * 31 + 7) % 40, sz: (i % 3) + 1 })) : [];
   return (

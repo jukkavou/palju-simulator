@@ -1,4 +1,6 @@
-export const ACTIVITIES = {
+import type { Activity } from '../types';
+
+export const ACTIVITIES: Record<string, Activity[]> = {
   fri_eve: [
     { id: "unpack", label: "🏠 Purka tavarat", effects: { mood: 5 }, text: "Tavarat kannetaan sisaan." },
     { id: "sauna1", label: "🔥 Lammita sauna", effects: { sauna: 40, wood: -10, mood: 10 }, charEffects: { leader: "Janne", leaderBonus: { happiness: 10 } }, text: "Ensimmaiset loylyt!" },

@@ -1,8 +1,19 @@
 import { SHOPPING_ITEMS } from '../data/shopping';
-const PF = "'Courier New', monospace";
-const btn = (bg) => ({ padding: "6px 10px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "left", width: "100%" });
+import type { ShoppingItem } from '../types';
 
-export default function ShoppingScreen({ budget, spent, cart, onAdd, onRemove, onNext }) {
+const PF = "'Courier New', monospace";
+const btn = (bg: string) => ({ padding: "6px 10px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "left" as const, width: "100%" });
+
+interface ShoppingScreenProps {
+  budget: number;
+  spent: number;
+  cart: ShoppingItem[];
+  onAdd: (item: ShoppingItem) => void;
+  onRemove: (idx: number) => void;
+  onNext: () => void;
+}
+
+export default function ShoppingScreen({ budget, spent, cart, onAdd, onRemove, onNext }: ShoppingScreenProps) {
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", background: "#1a1a1a", minHeight: "100vh", color: "#eee", fontFamily: PF, fontSize: 12 }}>
       <div style={{ padding: 10 }}>

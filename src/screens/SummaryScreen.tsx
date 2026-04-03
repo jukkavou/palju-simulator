@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import PixelCabin from '../components/PixelCabin';
 import { getRating } from '../utils/scoring';
-const PF = "'Courier New', monospace";
-const btn = (bg) => ({ padding: "8px 12px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "center", width: "100%" });
+import type { Score, CharState } from '../types';
 
-export default function SummaryScreen({ score, characters, onSave, onRestart }) {
+const PF = "'Courier New', monospace";
+const btn = (bg: string) => ({ padding: "8px 12px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "center" as const, width: "100%" });
+
+interface SummaryScreenProps {
+  score: Score;
+  characters: CharState[];
+  onSave: (name: string) => void;
+  onRestart: () => void;
+}
+
+export default function SummaryScreen({ score, characters, onSave, onRestart }: SummaryScreenProps) {
   const [tripName, setTripName] = useState("");
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", background: "#1a1a1a", minHeight: "100vh", color: "#eee", fontFamily: PF, fontSize: 12 }}>

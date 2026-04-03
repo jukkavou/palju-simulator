@@ -1,4 +1,6 @@
-export function calculateScore(characters, resources) {
+import type { CharState, Resources, Score } from '../types';
+
+export function calculateScore(characters: CharState[], resources: Resources): Score {
   const avgHappy = Math.round(characters.reduce((a, c) => a + c.happiness, 0) / characters.length);
   const avgDrunk = Math.round(characters.reduce((a, c) => a + c.drunk, 0) / characters.length);
   const s = {
@@ -10,12 +12,13 @@ export function calculateScore(characters, resources) {
     drunkPenalty: avgDrunk > 60 ? -15 : avgDrunk > 40 ? -5 : 0,
     foodPenalty: characters.some(c => c.fullness < 10) ? -10 : 0,
     dehydrationPenalty: characters.some(c => c.hydration < 15) ? -10 : 0,
+    total: 0,
   };
   s.total = Object.values(s).reduce((a, b) => a + b, 0);
   return s;
 }
 
-export function getRating(total) {
+export function getRating(total: number): string {
   if (total >= 150) return "LEGENDAARINEN";
   if (total >= 120) return "LOISTAVA";
   if (total >= 90) return "HYVA";

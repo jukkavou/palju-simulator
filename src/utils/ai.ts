@@ -1,11 +1,13 @@
+import type { CharState, Dialogue } from '../types';
+
 const API_URL = "https://api.anthropic.com/v1/messages";
 
-export async function generateDialogue(chars, situation, timeLabel, apiKey) {
+export async function generateDialogue(chars: CharState[], situation: string, timeLabel: string, apiKey: string): Promise<Dialogue> {
   const charDesc = chars
     .map(c => `${c.name} (${c.trait}): tyytyv ${c.happiness}/100, humala ${c.drunk}/100, kyll ${c.fullness}/100, neste ${c.hydration}/100`)
     .join("\n");
 
-  const headers = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (apiKey) {
     headers["x-api-key"] = apiKey;
     headers["anthropic-dangerous-direct-browser-access"] = "true";
@@ -26,18 +28,18 @@ export async function generateDialogue(chars, situation, timeLabel, apiKey) {
       })
     });
     const data = await res.json();
-    const txt = data.content?.map(b => b.text || "").join("") || "";
+    const txt = (data.content as Array<{ text?: string }>)?.map(b => b.text || "").join("") || "";
     const clean = txt.replace(/```json|```/g, "").trim();
-    return JSON.parse(clean);
+    return JSON.parse(clean) as Dialogue;
   } catch (e) {
     console.warn("AI dialogue failed:", e);
     return fallbackDialogue(chars);
   }
 }
 
-function fallbackDialogue(chars) {
+function fallbackDialogue(chars: CharState[]): Dialogue {
   return { lines: [
-    { name: chars[0].name, text: "No niin, tassa sita ollaan taas." },
-    { name: chars[Math.floor(Math.random() * chars.length)].name, text: "Eiko oo hienoa?" },
+    { name: chars[0]!.name, text: "No niin, tassa sita ollaan taas." },
+    { name: chars[Math.floor(Math.random() * chars.length)]!.name, text: "Eiko oo hienoa?" },
   ]};
 }

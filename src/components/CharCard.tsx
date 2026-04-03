@@ -1,7 +1,15 @@
 import StatusBar from './StatusBar';
+import type { CharState } from '../types';
+
 const PF = "'Courier New', monospace";
 
-export default function CharCard({ char, expanded, onClick }) {
+interface CharCardProps {
+  char: CharState;
+  expanded: boolean;
+  onClick: () => void;
+}
+
+export default function CharCard({ char, expanded, onClick }: CharCardProps) {
   const c = char;
   const face = c.happiness > 70 ? "😄" : c.happiness > 40 ? "😐" : "😞";
   const drunk = c.drunk > 60 ? "🥴" : c.drunk > 30 ? "😵‍💫" : "";

@@ -1,7 +1,14 @@
-const PF = "'Courier New', monospace";
-const btn = (bg) => ({ padding: "8px 12px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "center", width: "100%" });
+import type { HallOfFameEntry } from '../types';
 
-export default function HallOfFame({ entries, onRestart }) {
+const PF = "'Courier New', monospace";
+const btn = (bg: string) => ({ padding: "8px 12px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "center" as const, width: "100%" });
+
+interface HallOfFameProps {
+  entries: HallOfFameEntry[];
+  onRestart: () => void;
+}
+
+export default function HallOfFame({ entries, onRestart }: HallOfFameProps) {
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", background: "#1a1a1a", minHeight: "100vh", color: "#eee", fontFamily: PF, fontSize: 12 }}>
       <div style={{ padding: 16 }}>

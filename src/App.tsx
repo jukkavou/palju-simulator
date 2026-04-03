@@ -12,24 +12,27 @@ import GearScreen from './screens/GearScreen';
 import GameScreen from './screens/GameScreen';
 import SummaryScreen from './screens/SummaryScreen';
 import HallOfFame from './components/HallOfFame';
+import type { Character, ShoppingItem, GearItem, Activity, Score, HallOfFameEntry } from './types';
+
+type Phase = "start" | "shopping" | "gear" | "playing" | "summary" | "halloffame";
 
 export default function App() {
-  const [phase, setPhase] = useState("start");
-  const [charTemplates, setCharTemplates] = useState([...DEFAULT_CHARACTERS]);
+  const [phase, setPhase] = useState<Phase>("start");
+  const [charTemplates, setCharTemplates] = useState<Character[]>([...DEFAULT_CHARACTERS]);
   const [budget] = useState(200);
   const [spent, setSpent] = useState(0);
-  const [cart, setCart] = useState([]);
-  const [gear, setGear] = useState([]);
-  const [score, setScore] = useState(null);
-  const [hallOfFame, setHallOfFame] = useState([]);
+  const [cart, setCart] = useState<ShoppingItem[]>([]);
+  const [gear, setGear] = useState<GearItem[]>([]);
+  const [score, setScore] = useState<Score | null>(null);
+  const [hallOfFame, setHallOfFame] = useState<HallOfFameEntry[]>([]);
   const [apiKey, setApiKey] = useState("");
 
   const game = useGameState(charTemplates);
   const dialog = useDialogue();
   const currentSlot = TIME_SLOTS[game.timeSlot];
-  const currentActivities = ACTIVITIES[currentSlot?.id] || [];
+  const currentActivities = ACTIVITIES[currentSlot?.id ?? ""] ?? [];
 
-  const doActivity = async (act) => {
+  const doActivity = async (act: Activity) => {
     if (game.actionsLeft <= 0) return;
     if (act.requires && !gear.find(g => g.name === act.requires)) { game.log("Puuttuu: " + act.requires, "#f44"); return; }
     const r = game.resources;
@@ -40,23 +43,23 @@ export default function App() {
     if (act.charEffects) {
       game.updateAllChars(act.charEffects);
       if (act.charEffects.leader) {
-        const leader = game.characters.find(c => c.name === act.charEffects.leader || c.trait === act.charEffects.leader);
+        const leader = game.characters.find(c => c.name === act.charEffects!.leader || c.trait === act.charEffects!.leader);
         if (leader && act.charEffects.leaderBonus) game.updateChar(leader.name, act.charEffects.leaderBonus);
       }
     }
     game.setActionsLeft(prev => prev - 1);
     game.log(act.text, "#0f0");
-    const dl = await dialog.fetchDialogue(game.characters, act.text, currentSlot?.label, apiKey);
+    const dl = await dialog.fetchDialogue(game.characters, act.text, currentSlot?.label ?? "", apiKey);
     if (dl?.lines) dl.lines.forEach(l => game.log(l.name + ': "' + l.text + '"', "#88f"));
   };
 
   const advanceTime = () => {
     if (game.timeSlot >= TIME_SLOTS.length - 1) { setScore(calculateScore(game.characters, game.resources)); setPhase("summary"); return; }
     if (Math.random() < 0.45 && game.timeSlot > 0) {
-      const evt = RANDOM_EVENTS[Math.floor(Math.random() * RANDOM_EVENTS.length)];
+      const evt = RANDOM_EVENTS[Math.floor(Math.random() * RANDOM_EVENTS.length)]!;
       game.applyResourceEffects(evt.effects);
       if (evt.charEffects) game.updateAllChars(evt.charEffects);
-      if (evt.charTarget) { const t = game.characters.find(c => c.trait === evt.charTarget.trait); if (t) game.updateChar(t.name, { happiness: evt.charTarget.happiness }); }
+      if (evt.charTarget) { const t = game.characters.find(c => c.trait === evt.charTarget!.trait); if (t) game.updateChar(t.name, { happiness: evt.charTarget.happiness }); }
       game.log(evt.text, "#ff0");
     }
     game.decayResources();
@@ -70,8 +73,8 @@ export default function App() {
     });
   };
 
-  const saveToHallOfFame = (name) => {
-    setHallOfFame(prev => [...prev, { name, score: score.total, chars: game.characters.map(c => c.name), date: new Date().toLocaleDateString("fi-FI") }].sort((a,b) => b.score - a.score).slice(0, 10));
+  const saveToHallOfFame = (name: string) => {
+    setHallOfFame(prev => [...prev, { name, score: score!.total, chars: game.characters.map(c => c.name), date: new Date().toLocaleDateString("fi-FI") }].sort((a,b) => b.score - a.score).slice(0, 10));
     setPhase("halloffame");
   };
 
@@ -80,17 +83,17 @@ export default function App() {
     dialog.clearDialogue(); game.reset(charTemplates);
   };
 
-  const addToCart = (item) => {
+  const addToCart = (item: ShoppingItem) => {
     if (spent + item.cost > budget) return;
     setCart(prev => [...prev, item]); setSpent(prev => prev + item.cost);
     game.setResources(prev => ({ ...prev, food: prev.food+(item.food||0), booze: prev.booze+(item.booze||0), wood: prev.wood+(item.wood||0), hydration: prev.hydration+(item.hydration||0) }));
   };
-  const removeFromCart = (idx) => {
-    const item = cart[idx];
+  const removeFromCart = (idx: number) => {
+    const item = cart[idx]!;
     setCart(prev => prev.filter((_,i) => i !== idx)); setSpent(prev => prev - item.cost);
     game.setResources(prev => ({ ...prev, food: prev.food-(item.food||0), booze: prev.booze-(item.booze||0), wood: prev.wood-(item.wood||0), hydration: prev.hydration-(item.hydration||0) }));
   };
-  const toggleGear = (item) => setGear(prev => prev.find(g => g.name === item.name) ? prev.filter(g => g.name !== item.name) : [...prev, item]);
+  const toggleGear = (item: GearItem) => setGear(prev => prev.find(g => g.name === item.name) ? prev.filter(g => g.name !== item.name) : [...prev, item]);
 
   if (phase === "halloffame") return <HallOfFame entries={hallOfFame} onRestart={restart} />;
   if (phase === "start") return <StartScreen characters={charTemplates} setCharacters={setCharTemplates} apiKey={apiKey} setApiKey={setApiKey} onStart={() => setPhase("shopping")} hasHallOfFame={hallOfFame.length > 0} onShowHallOfFame={() => setPhase("halloffame")} />;

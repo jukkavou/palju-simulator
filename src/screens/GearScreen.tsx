@@ -1,8 +1,17 @@
 import { GEAR_ITEMS } from '../data/gear';
-const PF = "'Courier New', monospace";
-const btn = (bg) => ({ padding: "6px 10px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "left", width: "100%" });
+import type { GearItem } from '../types';
 
-export default function GearScreen({ gear, onToggle, onBack, onStart }) {
+const PF = "'Courier New', monospace";
+const btn = (bg: string) => ({ padding: "6px 10px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "left" as const, width: "100%" });
+
+interface GearScreenProps {
+  gear: GearItem[];
+  onToggle: (item: GearItem) => void;
+  onBack: () => void;
+  onStart: () => void;
+}
+
+export default function GearScreen({ gear, onToggle, onBack, onStart }: GearScreenProps) {
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", background: "#1a1a1a", minHeight: "100vh", color: "#eee", fontFamily: PF, fontSize: 12 }}>
       <div style={{ padding: 10 }}>

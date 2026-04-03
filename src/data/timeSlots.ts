@@ -1,4 +1,6 @@
-export const TIME_SLOTS = [
+import type { TimeSlot, Scene } from '../types';
+
+export const TIME_SLOTS: TimeSlot[] = [
   { id: "fri_eve", label: "Perjantai-ilta", icon: "🌙" },
   { id: "sat_morn", label: "Lauantai-aamu", icon: "☀️" },
   { id: "sat_day", label: "Lauantai-paiva", icon: "🌤️" },
@@ -8,7 +10,7 @@ export const TIME_SLOTS = [
   { id: "sun_day", label: "Sunnuntai - Siivous", icon: "🧹" },
 ];
 
-export const SCENES = {
+export const SCENES: Record<string, Scene> = {
   fri_eve: { sky: "#0f0f23", ground: "#2d5016" },
   sat_morn: { sky: "#87CEEB", ground: "#4a7c2e" },
   sat_day: { sky: "#5bb5e8", ground: "#3d8b37" },

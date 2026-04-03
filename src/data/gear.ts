@@ -1,4 +1,6 @@
-export const GEAR_ITEMS = [
+import type { GearItem } from '../types';
+
+export const GEAR_ITEMS: GearItem[] = [
   { name: "DJI Mini 4 Pro -drone", emoji: "🚁", fun: 15 },
   { name: "RC-monstertruck", emoji: "🏎️", fun: 12 },
   { name: "Meta Quest 3 -lasit", emoji: "🥽", fun: 18 },

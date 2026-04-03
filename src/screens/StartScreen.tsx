@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PixelCabin from '../components/PixelCabin';
-const PF = "'Courier New', monospace";
-const btn = (bg) => ({ padding: "8px 12px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "center", width: "100%" });
+import type { Character } from '../types';
 
-export default function StartScreen({ characters, setCharacters, apiKey, setApiKey, onStart, hasHallOfFame, onShowHallOfFame }) {
+const PF = "'Courier New', monospace";
+const btn = (bg: string) => ({ padding: "8px 12px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "center" as const, width: "100%" });
+
+interface StartScreenProps {
+  characters: Character[];
+  setCharacters: React.Dispatch<React.SetStateAction<Character[]>>;
+  apiKey: string;
+  setApiKey: React.Dispatch<React.SetStateAction<string>>;
+  onStart: () => void;
+  hasHallOfFame: boolean;
+  onShowHallOfFame: () => void;
+}
+
+export default function StartScreen({ characters, setCharacters, apiKey, setApiKey, onStart, hasHallOfFame, onShowHallOfFame }: StartScreenProps) {
   const [editing, setEditing] = useState(false);
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", background: "#1a1a1a", minHeight: "100vh", color: "#eee", fontFamily: PF, fontSize: 12 }}>

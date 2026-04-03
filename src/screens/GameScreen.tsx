@@ -5,16 +5,34 @@ import StatusBar from '../components/StatusBar';
 import CharCard from '../components/CharCard';
 import EventLog from '../components/EventLog';
 import DialogueBubble from '../components/DialogueBubble';
+import type { TimeSlot, CharState, Resources, Activity, GearItem, EventLogEntry, Dialogue } from '../types';
 
 const PF = "'Courier New', monospace";
-const btn = (bg) => ({ padding: "6px 10px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "left", width: "100%" });
+const btn = (bg: string) => ({ padding: "6px 10px", background: bg, color: "#fff", border: "2px solid #555", borderRadius: 4, fontFamily: PF, fontSize: 11, cursor: "pointer", textAlign: "left" as const, width: "100%" });
 
-export default function GameScreen({ currentSlot, timeSlot, actionsLeft, characters, resources, activities, gear, eventLog, dialogue, loadingDialogue, onDoActivity, onAdvanceTime, totalSlots, nextSlotLabel }) {
-  const [expandedChar, setExpandedChar] = useState(null);
+interface GameScreenProps {
+  currentSlot: TimeSlot | undefined;
+  timeSlot: number;
+  actionsLeft: number;
+  characters: CharState[];
+  resources: Resources;
+  activities: Activity[];
+  gear: GearItem[];
+  eventLog: EventLogEntry[];
+  dialogue: Dialogue | null;
+  loadingDialogue: boolean;
+  onDoActivity: (act: Activity) => void;
+  onAdvanceTime: () => void;
+  totalSlots: number;
+  nextSlotLabel: string | undefined;
+}
+
+export default function GameScreen({ currentSlot, timeSlot, actionsLeft, characters, resources, activities, gear, eventLog, dialogue, loadingDialogue, onDoActivity, onAdvanceTime, totalSlots, nextSlotLabel }: GameScreenProps) {
+  const [expandedChar, setExpandedChar] = useState<string | null>(null);
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", background: "#1a1a1a", minHeight: "100vh", color: "#eee", fontFamily: PF, fontSize: 12 }}>
       <div style={{ padding: 6 }}>
-        <PixelCabin scene={currentSlot?.id} hotTubTemp={resources.hotTubTemp} />
+        <PixelCabin scene={currentSlot?.id ?? "fri_eve"} hotTubTemp={resources.hotTubTemp} />
         <div style={{ display: "flex", gap: 2, margin: "6px 0" }}>
           {TIME_SLOTS.map((ts, i) => <div key={ts.id} style={{ flex: 1, height: 5, borderRadius: 2, background: i < timeSlot ? "#4CAF50" : i === timeSlot ? "#FFD54F" : "#333" }} />)}
         </div>
@@ -37,8 +55,8 @@ export default function GameScreen({ currentSlot, timeSlot, actionsLeft, charact
         <DialogueBubble dialogue={dialogue} loading={loadingDialogue} />
         <div style={{ display: "grid", gap: 3, marginBottom: 6 }}>
           {activities.map(act => {
-            const disabled = actionsLeft <= 0 || (act.requires && !gear.find(g => g.name === act.requires));
-            const missing = act.requires && !gear.find(g => g.name === act.requires);
+            const disabled = actionsLeft <= 0 || (act.requires != null && !gear.find(g => g.name === act.requires));
+            const missing = act.requires != null && !gear.find(g => g.name === act.requires);
             return (
               <button key={act.id} onClick={() => onDoActivity(act)} disabled={disabled}
                 style={{ ...btn(disabled ? "#1a1a1a" : "#37474F"), opacity: disabled ? 0.4 : 1 }}>
@@ -49,7 +67,7 @@ export default function GameScreen({ currentSlot, timeSlot, actionsLeft, charact
           })}
         </div>
         <button onClick={onAdvanceTime} style={{ ...btn(timeSlot >= totalSlots - 1 ? "#E91E63" : "#FF9800"), textAlign: "center", fontSize: 11, marginBottom: 6 }}>
-          {timeSlot >= totalSlots - 1 ? "🏁 Lopputulos" : ">> " + nextSlotLabel}
+          {timeSlot >= totalSlots - 1 ? "🏁 Lopputulos" : ">> " + (nextSlotLabel ?? "")}
         </button>
         <EventLog events={eventLog} />
       </div>

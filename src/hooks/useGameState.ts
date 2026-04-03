@@ -1,34 +1,38 @@
 import { useState, useCallback } from 'react';
 import { createCharState } from '../data/characters';
+import type { Character, CharState, CharEffects, ResourceEffects, Resources, EventLogEntry } from '../types';
 
-const INITIAL_RESOURCES = {
+const INITIAL_RESOURCES: Resources = {
   food: 0, booze: 0, wood: 30, mood: 50,
   sauna: 0, hotTubTemp: 5, clean: 0, hydration: 0,
 };
 
-export function useGameState(initialChars) {
-  const [characters, setCharacters] = useState(createCharState(initialChars));
-  const [resources, setResources] = useState({ ...INITIAL_RESOURCES });
-  const [eventLog, setEventLog] = useState([]);
+export function useGameState(initialChars: Character[]) {
+  const [characters, setCharacters] = useState<CharState[]>(createCharState(initialChars));
+  const [resources, setResources] = useState<Resources>({ ...INITIAL_RESOURCES });
+  const [eventLog, setEventLog] = useState<EventLogEntry[]>([]);
   const [timeSlot, setTimeSlot] = useState(0);
   const [actionsLeft, setActionsLeft] = useState(3);
 
-  const log = useCallback((text, color = "#0f0") => {
+  const log = useCallback((text: string, color = "#0f0") => {
     setEventLog(prev => [...prev, { text, color }]);
   }, []);
 
-  const updateChar = useCallback((name, effects) => {
+  const updateChar = useCallback((name: string, effects: Record<string, number>) => {
     setCharacters(prev => prev.map(c => {
       if (c.name !== name) return c;
-      const n = { ...c };
-      Object.entries(effects).forEach(([k, v]) => {
-        if (k in n) n[k] = Math.max(0, Math.min(100, n[k] + v));
-      });
+      const n: CharState = { ...c };
+      const numericKeys = ['happiness', 'drunk', 'fullness', 'hydration'] as const;
+      for (const k of numericKeys) {
+        if (k in effects) {
+          n[k] = Math.max(0, Math.min(100, n[k] + effects[k]!));
+        }
+      }
       return n;
     }));
   }, []);
 
-  const updateAllChars = useCallback((effects) => {
+  const updateAllChars = useCallback((effects: CharEffects) => {
     setCharacters(prev => prev.map(c => {
       const n = { ...c };
       if (effects.allDrunk) n.drunk = Math.max(0, Math.min(100, n.drunk + effects.allDrunk));
@@ -39,15 +43,15 @@ export function useGameState(initialChars) {
     }));
   }, []);
 
-  const applyResourceEffects = useCallback((effects) => {
+  const applyResourceEffects = useCallback((effects: ResourceEffects) => {
     setResources(prev => {
-      const n = { ...prev };
-      Object.entries(effects).forEach(([k, v]) => {
-        if (k in n) {
+      const n: Resources = { ...prev };
+      for (const [k, v] of Object.entries(effects)) {
+        if (k in n && v !== undefined) {
           const max = k === "hotTubTemp" ? 42 : k === "clean" ? 100 : k === "mood" ? 100 : 999;
-          n[k] = Math.max(0, Math.min(max, n[k] + v));
+          (n as unknown as Record<string, number>)[k] = Math.max(0, Math.min(max, (n as unknown as Record<string, number>)[k]! + v));
         }
-      });
+      }
       return n;
     });
   }, []);
@@ -69,7 +73,7 @@ export function useGameState(initialChars) {
     })));
   }, []);
 
-  const reset = useCallback((chars) => {
+  const reset = useCallback((chars: Character[]) => {
     setCharacters(createCharState(chars));
     setResources({ ...INITIAL_RESOURCES });
     setEventLog([]);

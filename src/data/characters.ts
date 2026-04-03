@@ -1,4 +1,6 @@
-export const DEFAULT_CHARACTERS = [
+import type { Character, CharState } from '../types';
+
+export const DEFAULT_CHARACTERS: Character[] = [
   { name: "Ari", trait: "Teknonortti", emoji: "🤓", desc: "Tuo aina uusimmat vimpaimet" },
   { name: "Jukka", trait: "Grillimestari", emoji: "👨‍🍳", desc: "Vastaa ruuanlaitosta" },
   { name: "Janne", trait: "Saunamestari", emoji: "🔥", desc: "Pitaa loylyt kohdallaan" },
@@ -6,6 +8,6 @@ export const DEFAULT_CHARACTERS = [
   { name: "Vesa", trait: "Bilettaja", emoji: "🍺", desc: "Nostaa tunnelmaa" },
 ];
 
-export function createCharState(chars) {
+export function createCharState(chars: Character[]): CharState[] {
   return chars.map(c => ({ ...c, happiness: 60, drunk: 0, fullness: 50, hydration: 70 }));
 }

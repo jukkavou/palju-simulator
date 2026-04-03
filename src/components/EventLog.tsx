@@ -1,8 +1,14 @@
 import { useRef, useEffect } from 'react';
+import type { EventLogEntry } from '../types';
+
 const PF = "'Courier New', monospace";
 
-export default function EventLog({ events }) {
-  const ref = useRef(null);
+interface EventLogProps {
+  events: EventLogEntry[];
+}
+
+export default function EventLog({ events }: EventLogProps) {
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => { if (ref.current) ref.current.scrollTop = ref.current.scrollHeight; }, [events]);
   return (
     <div ref={ref} style={{ background: "#0a0a0a", border: "2px solid #333", borderRadius: 6, padding: 8, maxHeight: 180, overflowY: "auto", fontFamily: PF, fontSize: 10 }}>

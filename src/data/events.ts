@@ -1,4 +1,6 @@
-export const RANDOM_EVENTS = [
+import type { RandomEvent } from '../types';
+
+export const RANDOM_EVENTS: RandomEvent[] = [
   { text: "🦟 Hyttyset hyokkaavat!", effects: { mood: -8 }, charEffects: { allHappiness: -8 } },
   { text: "🌧️ Sadekuuro!", effects: { mood: -5, hotTubTemp: -4 }, charEffects: { allHydration: 5 } },
   { text: "🦌 Peura pihalla!", effects: { mood: 10 }, charEffects: { allHappiness: 8 } },
@@ -14,6 +16,6 @@ export const RANDOM_EVENTS = [
   { text: "🎸 Kitara loytyy kaapista!", effects: { mood: 10 }, charEffects: { allHappiness: 6 } },
   { text: "🦆 Sorsat tulevat laiturille!", effects: { mood: 6 }, charEffects: { allHappiness: 5 } },
   { text: "⚡ Salamoi kaukana!", effects: { mood: 8 }, charEffects: { allHappiness: 6 } },
-  { text: "🧊 Kannykkä tippuu jarveen!", effects: { mood: -8 }, charEffects: {} },
+  { text: "🧊 Kannykkä tippuu jarveen!", effects: { mood: -8 } },
   { text: "🍄 Suppilovahveroita pihalta!", effects: { food: 5, mood: 10 }, charEffects: { allHappiness: 8 } },
 ];
